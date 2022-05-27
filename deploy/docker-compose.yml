@@ -1,0 +1,46 @@
+version: "3.9"
+services:
+  application:
+    build:
+      context: ..
+      dockerfile: app.dockerfile
+    container_name: application
+    depends_on:
+      - database
+    ports:
+      - "8888:8888"
+    restart: always
+    tty: true
+    volumes:
+      - ./data:/data
+
+  cache:
+    container_name: cache
+    image: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+  database:
+    container_name: database
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: example
+    image: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
+  flower:
+    container_name: flower
+    depends_on:
+      - cache
+    image: flower
+
+networks:
+  default:
+
+volumes:
+  data:
