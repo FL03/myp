@@ -12,3 +12,10 @@ class ConsoleMessage(BaseModel):
     message: str
     timestamp: str = timestamp()
 
+
+class Block(BaseModel):
+    id: int
+    hash: str
+    nonce: str
+    previous_hash: str
+    timestamp: str = timestamp()

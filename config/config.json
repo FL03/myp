@@ -2,8 +2,7 @@
   "application": {
     "token": "some_token"
   },
-  "database": {
-    "name": "myp",
-    "uri": "sqlite:///local.db"
+  "provider": {
+    "endpoint": "https://rpc.ankr.com/eth"
   }
 }

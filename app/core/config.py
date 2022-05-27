@@ -17,17 +17,15 @@ class Application(BaseModel):
     token: str
 
 
-class Database(BaseModel):
-    name: Optional[str]
-    uri: Optional[str] = "sqlite:///local.db"
+class Provider(BaseModel):
+    endpoint: str
 
 
 class Settings(BaseSettings):
     application: Application
-    database: Database
     deta_key: str
     deta_name: str
-    provider: str = "https://rpc.ankr.com/eth"
+    provider: Provider
 
     class Config:
         env_file = '.env'
