@@ -3,7 +3,7 @@ services:
   application:
     build:
       context: ..
-      dockerfile: app.dockerfile
+      dockerfile: ../Dockerfile
     container_name: application
     depends_on:
       - database
