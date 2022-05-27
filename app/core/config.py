@@ -6,8 +6,8 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, BaseSettings
 
 
-def json_config_settings_source(settings: BaseSettings) -> Dict[str, Any]:
-    encoding = settings.__config__.env_file_encoding
+def json_config_settings_source(config: BaseSettings) -> Dict[str, Any]:
+    encoding = config.__config__.env_file_encoding
     return json.loads(pathlib.Path(glob.glob("**/default.config.json")[0]).read_text(encoding))
 
 
@@ -41,6 +41,7 @@ class Settings(BaseSettings):
     server: Server
 
     class Config:
+        env_file = '.env'
         env_file_encoding = 'utf-8'
 
         @classmethod
