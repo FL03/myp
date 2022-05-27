@@ -1,7 +1,9 @@
-import deta
-from web3 import Web3, HTTPProvider
+from functools import lru_cache
 
-from .config import Settings
+import deta
+from web3 import HTTPProvider, Web3
+
+from .config import Settings, get_settings
 from .constants import Constants
 from ..utils.ledgering import timestamp
 
@@ -10,7 +12,7 @@ class Session(object):
     constants: Constants = Constants()
     database: deta.Deta.Base
     provider: Web3
-    settings: Settings = Settings()
+    settings: Settings = get_settings()
     timestamp: str = timestamp()
 
     def __init__(self):
@@ -18,4 +20,8 @@ class Session(object):
         self.provider = Web3(HTTPProvider(self.settings.provider.endpoint))
 
 
-session: Session = Session()
+@lru_cache()
+def get_session() -> Session: return Session()
+
+
+session = get_session()

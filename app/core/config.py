@@ -1,6 +1,7 @@
 import glob
 import json
 import pathlib
+from functools import lru_cache
 from typing import Any, Dict, Optional
 
 from pydantic import BaseModel, BaseSettings
@@ -34,3 +35,7 @@ class Settings(BaseSettings):
         @classmethod
         def customise_sources(cls, init_settings, env_settings, file_secret_settings):
             return init_settings, json_config_settings_source, env_settings, file_secret_settings
+
+
+@lru_cache()
+def get_settings() -> Settings: return Settings()
