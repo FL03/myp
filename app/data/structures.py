@@ -12,6 +12,3 @@ class ConsoleMessage(BaseModel):
     message: str
     timestamp: str = timestamp()
 
-
-class Token(BaseModel):
-    token: str

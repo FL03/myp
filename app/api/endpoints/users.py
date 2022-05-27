@@ -3,6 +3,7 @@ from typing import List
 from fastapi import APIRouter, HTTPException
 from tortoise.contrib.fastapi import HTTPNotFoundError
 
+from app.core.session import session
 from app.data.models.users import Users, User_Pydantic, UserIn_Pydantic
 from app.utils.ledgering import Status
 
@@ -16,8 +17,9 @@ async def get_users():
 
 @router.post("/new", response_model=User_Pydantic)
 async def create_user(user: UserIn_Pydantic):
-    user_obj = await Users.create(**user.dict(exclude_unset=True))
-    return await User_Pydantic.from_tortoise_orm(user_obj)
+    return session.db.put(user.dict(exclude_unset=True))
+    # user_obj = await Users.create(**user.dict(exclude_unset=True))
+    # return await User_Pydantic.from_tortoise_orm(user_obj)
 
 
 @router.get("/user/{user_id}", response_model=User_Pydantic, responses={404: {"model": HTTPNotFoundError}})
