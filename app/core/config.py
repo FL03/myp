@@ -1,44 +1,33 @@
 import glob
 import json
 import pathlib
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 from pydantic import BaseModel, BaseSettings
 
 
-def json_config_settings_source(config: BaseSettings) -> Dict[str, Any]:
-    encoding = config.__config__.env_file_encoding
-    return json.loads(pathlib.Path(glob.glob("**/default.config.json")[0]).read_text(encoding))
+def json_config_settings_source(settings: BaseSettings) -> Dict[str, Any]:
+    encoding = settings.__config__.env_file_encoding
+    return json.loads(pathlib.Path(glob.glob("**/config.json")[0]).read_text(encoding))
+
+
+class Application(BaseModel):
+    name: Optional[str]
+    slug: Optional[str]
+    token: str
 
 
 class Database(BaseModel):
-    name: str
-    uri: str
-
-
-class Project(BaseModel):
-    name: str
-    run_mode: str
-    slug: str
-
-
-class Provider(BaseModel):
-    endpoint: str
-    public: Optional[str]
-    private: Optional[str]
-
-
-class Server(BaseModel):
-    host: str
-    port: int
-    reload: bool
+    name: Optional[str]
+    uri: Optional[str] = "sqlite:///local.db"
 
 
 class Settings(BaseSettings):
-    databases: List[Database]
-    project: Project
-    providers: List[Provider]
-    server: Server
+    application: Application
+    database: Database
+    deta_key: str
+    deta_name: str
+    provider: str = "https://rpc.ankr.com/eth"
 
     class Config:
         env_file = '.env'

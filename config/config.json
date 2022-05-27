@@ -1,0 +1,9 @@
+{
+  "application": {
+    "token": "some_token"
+  },
+  "database": {
+    "name": "myp",
+    "uri": "sqlite:///local.db"
+  }
+}

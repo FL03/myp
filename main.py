@@ -27,7 +27,7 @@ app.include_router(router=index.router)
 register_tortoise(
     add_exception_handlers=True,
     app=app,
-    db_url=session.settings.databases[0].uri,
+    db_url=session.settings.database.uri,
     generate_schemas=True,
     modules=dict(models=["app.data.models"])
 )
