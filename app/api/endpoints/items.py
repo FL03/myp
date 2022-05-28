@@ -3,6 +3,7 @@ from typing import List
 from fastapi import APIRouter
 
 from app.core.session import session
+from app.data.models import items
 
 db = session.deta.Base("items")
 router: APIRouter = APIRouter(prefix="/items", tags=["items"])
@@ -18,6 +19,6 @@ async def get_item_by_key(cid: str):
     return db.get(key=cid)
 
 
-@router.post("/{cid}")
-async def add_item(cid: str):
-    return db.get(key=cid)
+@router.post("/add")
+async def add_item(item: items.Item):
+    return db.put(items.ItemIn(**item.dict()))
