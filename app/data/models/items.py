@@ -1,5 +1,6 @@
 import random
 import secrets
+from typing import Optional
 
 from pydantic import BaseModel
 
@@ -8,7 +9,7 @@ from app.utils.date import timestamp
 
 class Item(BaseModel):
     label: str
-    description: str
+    description: Optional[str]
     content: dict
 
 

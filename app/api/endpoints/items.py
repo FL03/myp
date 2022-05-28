@@ -21,4 +21,4 @@ async def get_item_by_key(cid: str):
 
 @router.post("/add")
 async def add_item(item: items.Item):
-    return db.put(items.ItemIn(**item.dict()))
+    return db.put(data=items.ItemIn(**item.dict()).dict())
