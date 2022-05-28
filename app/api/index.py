@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from siwe import SiweMessage, ExpiredMessage, generate_nonce
 
+from app.api.endpoints import ethereum, users
 from app.core.session import session
 from app.utils import messages
-from .endpoints import ethereum, users
 
 router: APIRouter = APIRouter(prefix="/api", tags=["default"])
 

@@ -20,7 +20,8 @@ async def get_users():
 
 @router.post("/new", response_model=User)
 async def create_user(user: UserIn):
-    return session.db.put(user.dict(exclude_unset=True))
+    user.hashed_password = session.constants.authorization.context.hash(user.hashed_password)
+    return session.db.put(user)
 
 
 @router.get("/user/{user_key}", response_model=User)
