@@ -2,11 +2,14 @@ Jinja2
 bcrypt
 deta
 fastapi
+matplotlib
+numpy
+pandas
 passlib
 pydantic
 python-dotenv
 python-jose
 siwe
-tortoise-orm[asyncpg]
+strawberry-graphql
 uvicorn==0.17.5
 web3
