@@ -2,14 +2,41 @@ from datetime import timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
+from siwe.siwe import SiweMessage, ExpiredMessage, MalformedSession, generate_nonce
 
 from app.core.session import session
 from app.data.models.tokens import Token
+from app.utils import messages
 from app.utils.users import authenticate_user, create_access_token
 
 constants = session.constants
 db = session.deta.Base("users")
 router: APIRouter = APIRouter(prefix="/oauth", tags=["auth"])
+
+
+@router.post("/siwe/message")
+async def create_message(ensname: str):
+    msg = SiweMessage(
+        message=messages.Siwe(address=session.provider.ens.address(ensname), nonce=generate_nonce()).dict())
+    return msg.prepare_message()
+
+
+@router.get("/siwe/nonce")
+async def get_nonce() -> str:
+    return generate_nonce()
+
+
+@router.post("/siwe/verify")
+async def verification(ensname: str):
+    message = SiweMessage(message=messages.Siwe(address=session.provider.ens.address(ensname)).dict())
+    try:
+        return message.prepare_message()
+    except ExpiredMessage:
+        print("MessageError: Expired")
+    except MalformedSession:
+        print("Error: MalformedSession")
+    finally:
+        print("Error")
 
 
 @router.post("/token", response_model=Token)
