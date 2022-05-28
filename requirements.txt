@@ -3,6 +3,7 @@ fastapi
 passlib[bcrypt]
 pydantic
 python-jose[cryptography]
+python-multipart
 siwe
 uvicorn==0.17.5
 web3
