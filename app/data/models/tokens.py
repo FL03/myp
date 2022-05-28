@@ -7,4 +7,4 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    ensname: str
+    username: str
