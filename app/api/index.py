@@ -1,22 +1,23 @@
 from fastapi import APIRouter
 from siwe import SiweMessage, ExpiredMessage, generate_nonce
 
-from app.utils import ledgering
+from app.core.session import session
+from app.utils import messages
 from .endpoints import ethereum, users
 
 router: APIRouter = APIRouter(prefix="/api", tags=["default"])
 
 
-@router.get("/nonce")
-async def nonce() -> dict:
-    return dict(nonce=generate_nonce(), timestamp=ledgering.timestamp())
+@router.get("/auth/nonce", tags=["auth"])
+async def get_nonce() -> str:
+    return generate_nonce()
 
 
-@router.post("/verify")
-async def verification(message, signature):
-    siwe_message = SiweMessage(message=message)
+@router.post("/auth/verify/{ensname}", tags=["auth"])
+async def verification(ensname: str):
+    message = SiweMessage(message=messages.Siwe(address=session.provider.ens.address(ensname)).dict())
     try:
-        return siwe_message.verify(signature)
+        return message.prepare_message()
     except ExpiredMessage:
         print("MessageError: Expired")
     finally:

@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
-from tortoise.contrib.fastapi import register_tortoise
 
 from app.api import index
 
@@ -23,10 +22,3 @@ async def shutdown():
 
 
 app.include_router(router=index.router)
-register_tortoise(
-    add_exception_handlers=True,
-    app=app,
-    db_url="sqlite:///:memory.db",
-    generate_schemas=True,
-    modules=dict(models=["app.data.models"])
-)

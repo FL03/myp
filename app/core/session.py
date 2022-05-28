@@ -3,16 +3,15 @@ from functools import lru_cache
 import deta
 from web3 import HTTPProvider, Web3
 
-from .config import Settings, get_settings
-from .constants import Constants
-from ..utils.ledgering import timestamp
+from app.core import constants, config
+from app.utils.date import timestamp
 
 
 class Session(object):
-    constants: Constants = Constants()
+    constants = constants.Constants()
     database: deta.Deta.Base
     provider: Web3
-    settings: Settings = get_settings()
+    settings: config.Settings = config.get_settings()
     timestamp: str = timestamp()
 
     def __init__(self):

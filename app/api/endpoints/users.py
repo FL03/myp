@@ -1,41 +1,42 @@
 from typing import List
 
 from fastapi import APIRouter, HTTPException
-from tortoise.contrib.fastapi import HTTPNotFoundError
 
 from app.core.session import session
-from app.data.models.users import Users, User_Pydantic, UserIn_Pydantic
-from app.utils.ledgering import Status
+from app.data.models.users import User, UserIn
+from app.utils.messages import Status
 
 router: APIRouter = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.get("/", response_model=List[User_Pydantic])
+async def get_user(user_key: str):
+    return session.db.get(user_key)
+
+
+@router.get("/", response_model=List)
 async def get_users():
-    return await User_Pydantic.from_queryset(Users.all())
+    return session.db.fetch().items
 
 
-@router.post("/new", response_model=User_Pydantic)
-async def create_user(user: UserIn_Pydantic):
+@router.post("/new", response_model=User)
+async def create_user(user: UserIn):
     return session.db.put(user.dict(exclude_unset=True))
-    # user_obj = await Users.create(**user.dict(exclude_unset=True))
-    # return await User_Pydantic.from_tortoise_orm(user_obj)
 
 
-@router.get("/user/{user_id}", response_model=User_Pydantic, responses={404: {"model": HTTPNotFoundError}})
-async def get_user(user_id: int):
-    return await User_Pydantic.from_queryset_single(Users.get(id=user_id))
+@router.get("/user/{user_key}", response_model=User)
+async def get_user(user_key: str):
+    return await session.db.get(user_key)
 
 
-@router.put("/user/{user_id}", response_model=User_Pydantic, responses={404: {"model": HTTPNotFoundError}})
-async def update_user(user_id: int, user: UserIn_Pydantic):
-    await Users.filter(id=user_id).update(**user.dict(exclude_unset=True))
-    return await User_Pydantic.from_queryset_single(Users.get(id=user_id))
+@router.put("/user/{user_key}", response_model=User)
+async def update_user(user_key: str, user: UserIn):
+    await session.db.update(key=user_key, updates=user.dict(exclude_unset=True))
+    return await get_user(user_key)
 
 
-@router.delete("/user/{user_id}", response_model=Status, responses={404: {"model": HTTPNotFoundError}})
-async def delete_user(user_id: int):
-    deleted_count = await Users.filter(id=user_id).delete()
+@router.delete("/user/{user_key}", response_model=Status)
+async def delete_user(user_key: str):
+    deleted_count = session.db.delete(user_key)
     if not deleted_count:
-        raise HTTPException(status_code=404, detail=f"User {user_id} not found")
-    return Status(message=f"Deleted user {user_id}")
+        raise HTTPException(status_code=404, detail=f"User {user_key} not found")
+    return Status(message=f"Deleted user {user_key}")
