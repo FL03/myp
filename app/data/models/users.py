@@ -2,10 +2,9 @@ from pydantic import BaseModel
 
 
 class User(BaseModel):
-    key: str
     ensname: str
-    email: str
-    created_at: str
+    email: str | None = None
+    disabled: bool | None = None
 
 
 class UserIn(User):

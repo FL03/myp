@@ -5,6 +5,7 @@ from passlib.context import CryptContext
 class Authorization(object):
     algorithm: str = 'HS256'
     context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    expiration: int = 30
     scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 

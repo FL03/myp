@@ -23,6 +23,7 @@ class Provider(BaseModel):
 
 
 class Settings(BaseSettings):
+    api_token: str
     application: Application
     deta_key: str
     deta_name: str
