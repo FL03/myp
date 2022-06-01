@@ -9,6 +9,9 @@ RUN pip install -r requirements.txt
 
 FROM builder
 
+ENV SERVER_PORT=8888 \
+    DETA_ACCESS_TOKEN=token
+
 COPY . .
 
 EXPOSE 8888:8888

@@ -22,3 +22,8 @@ async def shutdown():
 
 
 app.include_router(router=index.router)
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("main:app", port=8001, host="0.0.0.0", reload=True)

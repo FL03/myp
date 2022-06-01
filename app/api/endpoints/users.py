@@ -1,6 +1,4 @@
-from typing import List
-
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, Depends
 
 from app.core.session import session
 from app.data.models.users import User, UserIn
@@ -11,35 +9,29 @@ db = session.deta.Base("users")
 router: APIRouter = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.get("/", response_model=List)
-async def get_users():
-    return db.fetch().items
-
-
-@router.post("/new")
-async def create_user(ensname: str, password: str):
-    return db.put(UserIn(ensname=ensname, hashed_password=get_password_hash(password)).dict())
-
-
-@router.get("/users/me")
-async def read_users_me(current_user: User = Depends(get_current_active_user)):
+@router.get("/")
+async def load_current_user(current_user: User = Depends(get_current_active_user)):
     return current_user
 
 
-@router.get("/user/{user_key}", response_model=User)
-async def get_user(user_key: str):
-    return await db.get(user_key)
+@router.post("/{username}")
+async def create_user(username: str, password: str):
+    return db.put(UserIn(username=username, hashed_password=get_password_hash(password)).dict())
 
 
-@router.put("/user/{user_key}", response_model=User)
-async def update_user(user_key: str, user: UserIn):
-    await db.update(key=user_key, updates=user.dict(exclude_unset=True))
-    return await get_user(user_key)
+@router.put("/{current_user.username}", dependencies=[Depends(get_current_active_user)], response_model=UserIn)
+async def update_current_user(current_user: UserIn = Depends(get_current_active_user), updates: UserIn = None):
+    user = current_user
+    db.update(key=user.key, updates=updates.dict(exclude_unset=True))
+    return UserIn(**db.get(user.key))
 
 
-@router.delete("/user/{user_key}", response_model=Status)
-async def delete_user(user_key: str):
-    deleted_count = db.delete(user_key)
-    if not deleted_count:
-        raise HTTPException(status_code=404, detail=f"User {user_key} not found")
-    return Status(message=f"Deleted user {user_key}")
+@router.delete("/user/{key}", response_model=Status)
+async def delete_user(key: str):
+    for i in db.fetch().items:
+        if key == i["key"]:
+            db.delete(key)
+            break
+        else:
+            raise (LookupError, "Failed to delete User(key={})".format(key))
+    return Status(message=f"Deleted user {key}")

@@ -23,10 +23,13 @@ class Provider(BaseModel):
 
 
 class Settings(BaseSettings):
-    api_token: str
-    application: Application
-    deta_key: str
+    base_url: str
+    deta_access_token: str
     deta_name: str
+    dev_mode: str
+    secret_key: str
+
+    application: Application
     provider: Provider
 
     class Config:

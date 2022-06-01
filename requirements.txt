@@ -2,8 +2,8 @@ deta
 fastapi
 passlib[bcrypt]
 pydantic
+python-dotenv
 python-jose[cryptography]
-python-multipart
 siwe
-uvicorn==0.17.5
+uvicorn[standard]==0.17.5
 web3

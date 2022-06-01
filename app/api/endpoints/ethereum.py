@@ -1,9 +1,15 @@
 from fastapi import APIRouter
+from pydantic import BaseModel
 
 from app.core.session import session
 
+db = session.deta.Base("user")
 provider: session.provider = session.provider
 router: APIRouter = APIRouter(prefix="/ethereum", tags=["ethereum"])
+
+
+class Block(BaseModel):
+    id: int
 
 
 @router.get("/accounts")
@@ -24,3 +30,9 @@ async def client_version() -> dict:
 @router.get("/ens/to/{ens}")
 async def ens_to_address(ens: str) -> dict:
     return dict(address=provider.ens.address(ens), ensname=ens)
+
+
+@router.get("/ens/resolve/{ens}")
+async def ens_to_address(ens: str, query: str = None):
+    res = provider.ens.resolve(name=ens, get=query)
+    return res

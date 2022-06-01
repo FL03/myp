@@ -15,7 +15,7 @@ async def fetch_users_items(query) -> List[dict]:
 
 
 @router.get("/{cid}")
-async def get_item_by_key(cid: str):
+async def get_item(cid: str):
     return db.get(key=cid)
 
 
