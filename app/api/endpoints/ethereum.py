@@ -3,7 +3,7 @@ from pydantic import BaseModel
 
 from app.core.session import session
 
-db = session.deta.Base("user")
+db = session.deta.Base("ethereum")
 provider: session.provider = session.provider
 router: APIRouter = APIRouter(prefix="/ethereum", tags=["ethereum"])
 

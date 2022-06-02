@@ -69,8 +69,3 @@ async def get_current_active_user(current_user: User = Depends(get_current_user)
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")
     return get_user(username=current_user.username)
-
-
-def decode_token(user_key):
-    user = get_user(user_key)
-    return user

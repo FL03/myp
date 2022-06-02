@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 
 class Profile(BaseModel):
+    email: Optional[str]
     prefix_name: Optional[str]
     first_name: Optional[str]
     middle_name: Optional[str]
